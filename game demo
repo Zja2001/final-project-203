@@ -1,25 +1,42 @@
 import java.io.*;
+import java.util.PriorityQueue;
+import java.util.Scanner;
+import java.lang.Comparable;
 public class final_project 
 {
-public static double player_health = 175;
-public static double player_Max_attack_stat = 30;
-public static double player_Min_attack_stat = 20;
-public static double potion_count = 7; 
+public static double worrior_health = 175;
+public static double worrior_Max_attack_stat = 30;
+public static double worrior_Min_attack_stat = 20;
+public static double worrior_speed_stat;
+public static double mage_health = 175;
+public static double mage_Max_attack_stat = 30;
+public static double mage_Min_attack_stat = 20;
+public static double mage_Max_magic_stat = 50;
+public static double mage_Min_magic_stat = 30;
+public static double mage_speed_stat;
+public static double potion_count = 7;
+public static double mana_count = 7;
 public static double goblin_health = 50;
 public static double goblin_Max_attack_stat = 15;
 public static double goblin_Min_attack_stat = 10;
+public static double goblin_speed_stat;
 public static double Bat_health = 60;
 public static double Bat_Max_attack_stat = 20;
 public static double Bat_Min_attack_stat = 15;
+public static double Bat_speed_stat;
 public static double Mimic_health = 65;
 public static double Mimic_Max_attack_stat = 25;
 public static double Mimic_Min_attack_stat = 20;
+public static double Mimic_speed_stat = 20;
 public static double gargoyle_health = 70;
 public static double gargoyle_Max_attack_stat = 30;
 public static double gargoyle_Min_attack_stat = 25;
+public static double gargoyle_speed_stat = 25;
 public static double dragon_health = 80;
 public static double dragon_Max_attack_stat = 35;
 public static double dragon_Min_attack_stat = 30;
+public static double dragon_speed_stat = 30;
+public static int goblin_attack_choice;
 public static int room_1_key = 0;
 public static int room_2_key = 0;
 public static int room_3_key = 0;
@@ -31,6 +48,7 @@ public static void main(String[] args)throws IOException
 	start_up_screen();
 	opening_text();
 	first_room_initial_visit();
+
 	
 }
 public static void start_up_screen()throws IOException
@@ -59,12 +77,11 @@ public static void first_room_initial_visit() throws IOException
 	
 	System.out.println("A threatening goblin has walked into the room. Time to battle!!!");
 	do
-		
 	{
 		System.out.println("The goblin attacks you with its club and knocks you to the floor");
-		player_health = player_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
-		System.out.println("You now have " + player_health + " health left");
-		if (player_health <= 0)
+		worrior_health = worrior_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+		System.out.println("You now have " + worrior_health + " health left");
+		if (worrior_health <= 0)
 		{
 			game_over_screen();
 		}
@@ -73,6 +90,7 @@ public static void first_room_initial_visit() throws IOException
 		System.out.println("Heal");
 		System.out.println("Check goblin stats");
 		battle_choice = (in.readLine());
+		String heal_choice;
 		switch (battle_choice)
 		{
 		case "Check goblin stats":
@@ -83,25 +101,141 @@ public static void first_room_initial_visit() throws IOException
 		break;
 		case "Attack":
 		case "attack":
-			System.out.println("You swing your sword and strike the goblin");
-			goblin_health = goblin_health - Math.floor(Math.random()*(player_Max_attack_stat-player_Min_attack_stat+1)+player_Min_attack_stat);
+		//create a priority queue for the goblin and the worrior and the mage to see who goes first
+          PriorityQueue<Integer> goblin_queue = new PriorityQueue<Integer>();
+		 //add the worrior and the mage and the goblin to the queue
+		 goblin_queue.add((int)worrior_speed_stat);
+		 goblin_queue.add((int)mage_speed_stat);
+		goblin_queue.add((int)goblin_speed_stat);
+		 //create a while loop to see who goes first
+		 while(!goblin_queue.isEmpty())
+		 {
+		//if the worrior is first
+		if (goblin_queue.peek() == worrior_speed_stat)
+		{
+			//worrior attacks first
+			System.out.println("You attack the goblin with your sword");
+			goblin_health = goblin_health - Math.floor(Math.random()*(worrior_Max_attack_stat-worrior_Min_attack_stat+1)+worrior_Min_attack_stat);
+			System.out.println("The goblin now has " + goblin_health + " health left");  
+			goblin_queue.remove(worrior_speed_stat);
+		}
+		//if the mage is first
+		if (goblin_queue.peek() == mage_speed_stat)
+		{
+			//mage attacks first
+			System.out.println("You attack the goblin with your magic");
+			goblin_health = goblin_health - Math.floor(Math.random()*(mage_Max_magic_stat-mage_Min_magic_stat+1)+mage_Min_magic_stat);
 			System.out.println("The goblin now has " + goblin_health + " health left");
+				mana_count = mana_count - 1;
+			System.out.println("You now have " + mana_count + " mana left");
+			mana_count = mana_count - 1;
+			goblin_queue.remove(mage_speed_stat);
+		}
+		//if the goblin is first
+		if (goblin_queue.peek() == goblin_speed_stat)
+		{
+			//goblin attacks first
+			//create a code that will have the goblin randomly attack the worrior or the mage
+			goblin_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (goblin_attack_choice == 1)
+			{
+				System.out.println("The goblin attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+			}
+			if(goblin_attack_choice == 2)
+			{
+				System.out.println("The goblin attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			
+			}
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			goblin_queue.remove(goblin_speed_stat);
+		}
 			break;
+	}
 		case "Heal":
 		case "heal":
-			if (potion_count > 0 && player_health < 120)
+		//ask the usuer who he wants to heal
+		//make a prioity quese to see if the goblin attacks first or the player heals first
+
+		//add the worrior and the mage and the goblin to the queue
+
+		System.out.println("Who do you want to heal?");
+		System.out.println("Worrior");
+		System.out.println("Mage");
+		heal_choice = (in.readLine());
+		switch (heal_choice)
+		{
+		case "Worrior":
+		case "worrior":
+			//heal the worrior
+			//create a while loop to see who goes first
+			
+			System.out.println("You heal the worrior");
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+			//make the goblin attack
+			goblin_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (goblin_attack_choice == 1)
 			{
-				System.out.println("You use one of your potions and you health heals by 50 points");
-				player_health = player_health + 50;
-				potion_count = potion_count - 1;
+				System.out.println("The goblin attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
 			}
-			if (potion_count < 1 || player_health == 120)
+			if(goblin_attack_choice == 2)
 			{
-				System.out.println("You are not able to use a potion at this time");
+				System.out.println("The goblin attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			break;
+			
+		case "Mage":
+		case "mage":
+			//heal the mage
+			System.out.println("You heal the mage");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			//make the goblin attack
+			goblin_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (goblin_attack_choice == 1)
+			{
+				System.out.println("The goblin attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
+			}
+			if(goblin_attack_choice == 2)
+			{
+				System.out.println("The goblin attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(goblin_Max_attack_stat-goblin_Min_attack_stat+1)+goblin_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
 			}
 			break;
 		}
+		break;
+		}
 	}
+	
 	while (goblin_health > 0);
 	if(goblin_health <= 0)
 	{
@@ -109,19 +243,69 @@ public static void first_room_initial_visit() throws IOException
 	}
 	System.out.println("Would you like to use a potion to heal yourself before looking around the room? This is your last chance before the next battle");
 	room_choice = (in.readLine());
+	String heal_choice;
 	switch(room_choice)
 	{
 	case "Yes":
 	case "yes":
-		if (potion_count > 0 && player_health < 120)
+	System.out.println("who would you like to heal?");
+	System.out.println("Worrior");
+	System.out.println("Mage");
+	heal_choice = (in.readLine());
+	switch (heal_choice)
+	{
+	case "Worrior":
+	case "worrior":
+		//heal the worrior
+
+		if (potion_count > 0 && worrior_health < 120)
 		{
 			System.out.println("You use one of your potions and you health heals by 50 points");
-			player_health = player_health + 50;
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
 		}
-		if (potion_count < 1 || player_health == 120)
+		if (potion_count < 1 || worrior_health == 120)
 		{
 			System.out.println("You are not able to use a potion at this time");
 		}
+		break;
+	case "Mage":
+	case "mage":
+		//heal the mage
+		if (potion_count > 0 && mage_health < 120)
+		{
+			System.out.println("You use one of your potions and you health heals by 50 points");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+		}
+		if (potion_count < 1 || mage_health == 120)
+		{
+			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+		case "Both":
+		case "both":
+			//heal both
+			if (potion_count > 0 && mage_health < 120 && worrior_health < 120)
+			{
+				System.out.println("You use one of your potions and you health heals by 50 points");
+				mage_health = mage_health + 50;
+				worrior_health = worrior_health + 50;
+				System.out.println("The mage now has " + mage_health + " health left");
+				System.out.println("The worrior now has " + worrior_health + " health left");
+				potion_count = potion_count - 2;
+				System.out.println("You now have " + potion_count + " potions left");
+			}
+			if (potion_count < 1 || mage_health == 120 || worrior_health == 120)
+			{
+				System.out.println("You are not able to use a potion at this time");
+			}
+			break;
+	}
 	case "No":
 	case "no":
 		System.out.println("You look around the room see a door in front of you and a door to the left of you");
@@ -200,47 +384,160 @@ public static void second_room_initial_visit() throws IOException
 	System.out.println("A big bat swoops down from the top of the room. Time to battle!!!");
 	do
 	{
-		System.out.println("The bat attacks you with its fangs and you feel a sharp pain in your neck");
-		player_health = player_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
-		System.out.println("You now have " + player_health + " health left");
-		if (player_health <= 0)
-		{
-			game_over_screen();
-		}
+		
 		System.out.println("Please select the action that you will do to fight the Bat");
 		System.out.println("Attack");
 		System.out.println("Heal");
 		System.out.println("Check Bat stats");
 		battle_choice = (in.readLine());
+		String heal_choice;
 		switch (battle_choice)
 		{
-		case "Check bat stats":
-		case "check bat stats":
-			System.out.println("The bat's health is " + Bat_health);
-			System.out.println("The bat's minimum attack stat is " + Bat_Min_attack_stat);
-			System.out.println("The bat's maximuim attack stat is " + Bat_Max_attack_stat);
+		case "Check goblin stats":
+		case "check goblin stats":
+			System.out.println("The Bat's health is " + Bat_health);
+			System.out.println("The Bat's minimum attack stat is " + Bat_Min_attack_stat);
+			System.out.println("The Bat's maximuim attack stat is " + Bat_Max_attack_stat);
 		break;
 		case "Attack":
 		case "attack":
-			System.out.println("You swing your sword and strike the bat");
-			Bat_health = Bat_health - Math.floor(Math.random()*(player_Max_attack_stat-player_Min_attack_stat+1)+player_Min_attack_stat);
+		//create a priority queue for the goblin and the worrior and the mage to see who goes first
+          PriorityQueue<Integer> Bat_queue = new PriorityQueue<Integer>();
+		 //add the worrior and the mage and the goblin to the queue
+		 Bat_queue.add((int)worrior_speed_stat);
+		 Bat_queue.add((int)mage_speed_stat);
+		Bat_queue.add((int)goblin_speed_stat);
+		 //create a while loop to see who goes first
+		 while(!Bat_queue.isEmpty())
+		 {
+		//if the worrior is first
+		if (Bat_queue.peek() == worrior_speed_stat)
+		{
+			//worrior attacks first
+			System.out.println("You attack the Bat with your sword");
+			Bat_health = Bat_health - Math.floor(Math.random()*(worrior_Max_attack_stat-worrior_Min_attack_stat+1)+worrior_Min_attack_stat);
+			System.out.println("The Bat now has " + Bat_health + " health left");  
+			Bat_queue.remove(worrior_speed_stat);
+		}
+		//if the mage is first
+		if (Bat_queue.peek() == mage_speed_stat)
+		{
+			//mage attacks first
+			System.out.println("You attack the Bat with your magic");
+			Bat_health = Bat_health - Math.floor(Math.random()*(mage_Max_magic_stat-mage_Min_magic_stat+1)+mage_Min_magic_stat);
 			System.out.println("The Bat now has " + Bat_health + " health left");
+				mana_count = mana_count - 1;
+			System.out.println("You now have " + mana_count + " mana left");
+			mana_count = mana_count - 1;
+			Bat_queue.remove(mage_speed_stat);
+		}
+		//if the goblin is first
+		if (Bat_queue.peek() == goblin_speed_stat)
+		{
+			//goblin attacks first
+			//create a code that will have the goblin randomly attack the worrior or the mage
+			goblin_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (goblin_attack_choice == 1)
+			{
+				System.out.println("The bat attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		Bat_queue.remove(Bat_speed_stat);
+			}
+			if(goblin_attack_choice == 2)
+			{
+				System.out.println("The Bat attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			Bat_queue.remove(Bat_speed_stat);
+			}
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+		}
+
 			break;
+	}
 		case "Heal":
 		case "heal":
-			if (potion_count > 0 && player_health < 175)
+		//ask the usuer who he wants to heal
+		//make a prioity quese to see if the goblin attacks first or the player heals first
+		PriorityQueue<Integer> heal_queue = new PriorityQueue<Integer>();
+		//add the worrior and the mage and the goblin to the queue
+
+		System.out.println("Who do you want to heal?");
+		System.out.println("Worrior");
+		System.out.println("Mage");
+		heal_choice = (in.readLine());
+				int Bat_attack_choice;
+				switch (heal_choice)
+		{
+		case "Worrior":
+		case "worrior":
+			//heal the worrior
+			//create a while loop to see who goes first
+			
+			System.out.println("You heal the worrior");
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+			//make the goblin attack
+			Bat_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (Bat_attack_choice == 1)
 			{
-				System.out.println("You use one of your potions and you health heals by 50 points");
-				player_health = player_health + 50;
-				System.out.println("Your heatlth is not " + player_health);
+				System.out.println("The Bat attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
 			}
-			if (potion_count < 1 || player_health == 175)
+			if(Bat_attack_choice == 2)
 			{
-				System.out.println("You are not able to use a potion at this time");
+				System.out.println("The Bat attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			break;
+			
+		case "Mage":
+		case "mage":
+			//heal the mage
+			System.out.println("You heal the mage");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			//make the goblin attack
+			Bat_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (Bat_attack_choice == 1)
+			{
+				System.out.println("The Bat attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
+			}
+			if(Bat_attack_choice == 2)
+			{
+				System.out.println("The Bat attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
 			}
 			break;
 		}
+		break;
+		}
 	}
+	
 	while (Bat_health > 0);
 	if(Bat_health <= 0)
 	{
@@ -248,19 +545,68 @@ public static void second_room_initial_visit() throws IOException
 	}
 	System.out.println("Would you like to use a potion to heal yourself before looking around the room? This is your last chance before the next battle");
 	room_choice = (in.readLine());
+	String heal_choice;
 	switch(room_choice)
 	{
 	case "Yes":
 	case "yes":
-		if (potion_count > 0 && player_health < 175)
+	System.out.println("who would you like to heal?");
+	System.out.println("Worrior");
+	System.out.println("Mage");
+	heal_choice = (in.readLine());
+	switch (heal_choice)
+	{
+	case "Worrior":
+	case "worrior":
+		//heal the worrior
+
+		if (potion_count > 0 && worrior_health < 120)
 		{
 			System.out.println("You use one of your potions and you health heals by 50 points");
-			player_health = player_health + 50;
-			System.out.println("Your heatlth is now " + player_health);
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
 		}
-		if (potion_count < 1 || player_health == 175)
+		if (potion_count < 1 || worrior_health == 120)
 		{
 			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+	case "Mage":
+	case "mage":
+		//heal the mage
+		if (potion_count > 0 && mage_health < 120)
+		{
+			System.out.println("You use one of your potions and you health heals by 50 points");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+		}
+		if (potion_count < 1 || mage_health == 120)
+		{
+			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+		case "Both":
+		case "both":
+			//heal both
+			if (potion_count > 0 && mage_health < 120 && worrior_health < 120)
+			{
+				System.out.println("You use one of your potions and you health heals by 50 points");
+				mage_health = mage_health + 50;
+				worrior_health = worrior_health + 50;
+				System.out.println("The mage now has " + mage_health + " health left");
+				System.out.println("The worrior now has " + worrior_health + " health left");
+				potion_count = potion_count - 2;
+				System.out.println("You now have " + potion_count + " potions left");
+			}
+			if (potion_count < 1 || mage_health == 120 || worrior_health == 120)
+			{
+				System.out.println("You are not able to use a potion at this time");
+			}
+			break;
 		}
 	case "No":
 	case "no":
@@ -338,78 +684,233 @@ public static void Room_3_initial_visit() throws IOException
 		System.out.println("OH NO ITS A MIMIC");
 		System.out.println("TIME TO BATTLE");
 		do
+	{
+		
+		System.out.println("Please select the action that you will do to fight the Mimic");
+		System.out.println("Attack");
+		System.out.println("Heal");
+		System.out.println("Check mimic stats");
+		battle_choice = (in.readLine());
+		String heal_choice;
+		switch (battle_choice)
 		{
-			System.out.println("The Mimic attacks you with its fangs and you feel a sharp pain on your arm");
-			player_health = player_health - Math.floor(Math.random()*(Mimic_Max_attack_stat-Mimic_Min_attack_stat+1)+Mimic_Min_attack_stat);;
-			System.out.println("You now have " + player_health + " health left");
-			if (player_health <= 0)
+		case "Check mimic stats":
+		case "check mimic stats":
+			System.out.println("The Mimic's health is " + Mimic_health);
+			System.out.println("The Mimic's minimum attack stat is " + Mimic_Min_attack_stat);
+			System.out.println("The Mimic's maximuim attack stat is " + Mimic_Max_attack_stat);
+		break;
+		case "Attack":
+		case "attack":
+		//create a priority queue for the goblin and the worrior and the mage to see who goes first
+          PriorityQueue<Integer> Mimic_queue = new PriorityQueue<Integer>();
+		 //add the worrior and the mage and the goblin to the queue
+		 Mimic_queue.add((int)worrior_speed_stat);
+		Mimic_queue.add((int)mage_speed_stat);
+		Mimic_queue.add((int)Mimic_speed_stat);
+		 //create a while loop to see who goes first
+		 while(!Mimic_queue.isEmpty())
+		 {
+		//if the worrior is first
+		if (Mimic_queue.peek() == worrior_speed_stat)
+		{
+			//worrior attacks first
+			System.out.println("You attack the Bat with your sword");
+			Mimic_health = Mimic_health - Math.floor(Math.random()*(worrior_Max_attack_stat-worrior_Min_attack_stat+1)+worrior_Min_attack_stat);
+			System.out.println("The Bat now has " + Mimic_health + " health left"); 
+			Mimic_queue.remove(worrior_speed_stat); 
+		}
+		//if the mage is first
+		if (Mimic_queue.peek() == mage_speed_stat)
+		{
+			//mage attacks first
+			System.out.println("You attack the Bat with your magic");
+			Mimic_health = Mimic_health - Math.floor(Math.random()*(mage_Max_magic_stat-mage_Min_magic_stat+1)+mage_Min_magic_stat);
+			System.out.println("The Bat now has " + Mimic_health + " health left");
+				mana_count = mana_count - 1;
+			System.out.println("You now have " + mana_count + " mana left");
+			Mimic_queue.remove(mage_speed_stat);
+		}
+		//if the goblin is first
+		if (Mimic_queue.peek() == Mimic_speed_stat)
+		{
+			//goblin attacks first
+			//create a code that will have the goblin randomly attack the worrior or the mage
+			int Mimic_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (Mimic_attack_choice == 1)
+			{
+				System.out.println("The bat attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(Mimic_Max_attack_stat-Mimic_Min_attack_stat+1)+Mimic_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+				Mimic_queue.remove(Mimic_speed_stat);
+			}
+			if(Mimic_attack_choice == 2)
+			{
+				System.out.println("The Bat attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(Bat_Max_attack_stat-Bat_Min_attack_stat+1)+Bat_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+				Mimic_queue.remove(Mimic_speed_stat);
+			}
+			if(worrior_health && mage_health <= 0)
 			{
 				game_over_screen();
 			}
-			System.out.println("Please select the action that you will do to fight the Bat");
-			System.out.println("Attack");
-			System.out.println("Heal");
-			System.out.println("Check mimic stats");
-			battle_choice = (in.readLine());
-			switch (battle_choice)
-			{
-			case "Check mimic stats":
-			case "check mimic stats":
-				System.out.println("The mimic's health is " + Mimic_health);
-				System.out.println("The mimic's minimum attack stat is " + Mimic_Min_attack_stat);
-				System.out.println("The mimic's maximuim attack stat is " + Mimic_Max_attack_stat);
-			break;
-			case "Attack":
-			case "attack":
-				System.out.println("You swing your sword and strike the bat");
-				Mimic_health = Mimic_health - Math.floor(Math.random()*(player_Max_attack_stat-player_Min_attack_stat+1)+player_Min_attack_stat);
-				System.out.println("The mimic now has " + Mimic_health + " health left");
-				break;
-			case "Heal":
-			case "heal":
-				if (potion_count > 0 && player_health < 175)
-				{
-					System.out.println("You use one of your potions and you health heals by 50 points");
-					player_health = player_health + 50;
-					System.out.println("Your heatlth is now " + player_health);
-				}
-				if (potion_count < 1 || player_health == 175)
-				{
-					System.out.println("You are not able to use a potion at this time");
-				}
-				break;
-			}
+		
 		}
-		while (Mimic_health > 0);
-		if(Mimic_health <= 0)
-		{
-			System.out.println("Congratulations!! You have subdued the Mimic!!");
-			System.out.println("But be careful. he is not dead");
-			if (room_4_key == 0)
-			{
-			System.out.println("It did however drop a key on the floor that you pick up.");
-			room_4_key = 1;
-			}
-			System.out.println("Would you like to use a potion to heal yourself before looking around the room? This is your last chance before the next battle");
-			room_choice = (in.readLine());
-			switch(room_choice)
-			{
-			case "Yes":
-			case "yes":
-				if (potion_count > 0 && player_health < 175)
-				{
-					System.out.println("You use one of your potions and you health heals by 50 points");
-					player_health = player_health + 50;
-					System.out.println("Your heatlth is not " + player_health);
-				}
-				if (potion_count < 1 || player_health == 175)
-				{
-					System.out.println("You are not able to use a potion at this time");
-				}
 			break;
+	}
+		case "Heal":
+		case "heal":
+		//ask the usuer who he wants to heal
+		//make a prioity quese to see if the goblin attacks first or the player heals first
+		PriorityQueue<Integer> heal_queue = new PriorityQueue<Integer>();
+		//add the worrior and the mage and the goblin to the queue
+
+		System.out.println("Who do you want to heal?");
+		System.out.println("Worrior");
+		System.out.println("Mage");
+		heal_choice = (in.readLine());
+				int Mimic_attack_choice;
+				switch (heal_choice)
+		{
+		case "Worrior":
+		case "worrior":
+			//heal the worrior
+			//create a while loop to see who goes first
+			
+			System.out.println("You heal the worrior");
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+			//make the goblin attack
+			Mimic_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (Mimic_attack_choice == 1)
+			{
+				System.out.println("The Mimic attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(Mimic_Max_attack_stat-Mimic_Min_attack_stat+1)+Mimic_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
+			}
+			if(Mimic_attack_choice == 2)
+			{
+				System.out.println("The Mimic attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(Mimic_Max_attack_stat-Mimic_Min_attack_stat+1)+Mimic_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			break;
+			
+		case "Mage":
+		case "mage":
+			//heal the mage
+			System.out.println("You heal the mage");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			//make the goblin attack
+			Mimic_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (Mimic_attack_choice == 1)
+			{
+				System.out.println("The Mimic attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(Mimic_Max_attack_stat-Mimic_Min_attack_stat+1)+Mimic_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
+			}
+			if(Mimic_attack_choice == 2)
+			{
+				System.out.println("The Mimic attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(Mimic_Max_attack_stat-Mimic_Min_attack_stat+1)+Mimic_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			break;
+		}
+		break;
+		}
+	}
+	
+	while (Mimic_health > 0);
+	if(Mimic_health <= 0)
+	{
+		System.out.println("Congratulations!! You have defeated the Mimic!! You are now able to look around the room.");
+	}
+	System.out.println("Would you like to use a potion to heal yourself before looking around the room? This is your last chance before the next battle");
+	room_choice = (in.readLine());
+	String heal_choice;
+	switch(room_choice)
+	{
+	case "Yes":
+	case "yes":
+	System.out.println("who would you like to heal?");
+	System.out.println("Worrior");
+	System.out.println("Mage");
+	heal_choice = (in.readLine());
+	switch (heal_choice)
+	{
+	case "Worrior":
+	case "worrior":
+		//heal the worrior
+
+		if (potion_count > 0 && worrior_health < 120)
+		{
+			System.out.println("You use one of your potions and you health heals by 50 points");
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+		}
+		if (potion_count < 1 || worrior_health == 120)
+		{
+			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+	case "Mage":
+	case "mage":
+		//heal the mage
+		if (potion_count > 0 && mage_health < 120)
+		{
+			System.out.println("You use one of your potions and you health heals by 50 points");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+		}
+		if (potion_count < 1 || mage_health == 120)
+		{
+			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+		case "Both":
+		case "both":
+			//heal both
+			if (potion_count > 0 && mage_health < 120 && worrior_health < 120)
+			{
+				System.out.println("You use one of your potions and you health heals by 50 points");
+				mage_health = mage_health + 50;
+				worrior_health = worrior_health + 50;
+				System.out.println("The mage now has " + mage_health + " health left");
+				System.out.println("The worrior now has " + worrior_health + " health left");
+				potion_count = potion_count - 2;
+				System.out.println("You now have " + potion_count + " potions left");
+			}
+			if (potion_count < 1 || mage_health == 120 || worrior_health == 120)
+			{
+				System.out.println("You are not able to use a potion at this time");
+			}
+			break;
+		}
 			case "No":
 			case "no":
-			}
+			
 		}
 		break;
 	case "Check crack":
@@ -459,20 +960,15 @@ public static void Room_4_initial_visit() throws IOException
 	boolean doagain;
 	System.out.println("As you walk into the now room, the door slams behind you. You try to re open it witht the key but it seems to magically sealed.");
 	System.out.println("A big gargoyle swoops down from the top of the room. Time to battle!!!");
-	do
+		do
 	{
-		System.out.println("The gargoyle attacks you with its fangs and you feel a sharp pain in your neck");
-		player_health = player_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
-		System.out.println("You now have " + player_health + " health left");
-		if (player_health <= 0)
-		{
-			game_over_screen();
-		}
+		
 		System.out.println("Please select the action that you will do to fight the gargoyle");
 		System.out.println("Attack");
 		System.out.println("Heal");
 		System.out.println("Check gargoyle stats");
 		battle_choice = (in.readLine());
+		String heal_choice;
 		switch (battle_choice)
 		{
 		case "Check gargoyle stats":
@@ -483,48 +979,209 @@ public static void Room_4_initial_visit() throws IOException
 		break;
 		case "Attack":
 		case "attack":
-			System.out.println("You swing your sword and strike the gargoyle");
-			gargoyle_health = gargoyle_health - Math.floor(Math.random()*(player_Max_attack_stat-player_Min_attack_stat+1)+player_Min_attack_stat);
+		//create a priority queue for the goblin and the worrior and the mage to see who goes first
+          PriorityQueue<Integer> gargoyle_queue = new PriorityQueue<Integer>();
+		 //add the worrior and the mage and the goblin to the queue
+		 gargoyle_queue.add((int)worrior_speed_stat);
+		gargoyle_queue.add((int)mage_speed_stat);
+		gargoyle_queue.add((int)Mimic_speed_stat);
+		 //create a while loop to see who goes first
+		 while(!gargoyle_queue.isEmpty())
+		 {
+		//if the worrior is first
+		if (gargoyle_queue.peek() == worrior_speed_stat)
+		{
+			//worrior attacks first
+			System.out.println("You attack the gargoyle with your sword");
+			Mimic_health = Mimic_health - Math.floor(Math.random()*(worrior_Max_attack_stat-worrior_Min_attack_stat+1)+worrior_Min_attack_stat);
+			System.out.println("The gargoyle now has " + gargoyle_health + " health left"); 
+			gargoyle_queue.remove(worrior_speed_stat); 
+		}
+		//if the mage is first
+		if (gargoyle_queue.peek() == mage_speed_stat)
+		{
+			//mage attacks first
+			System.out.println("You attack the gargoyle with your magic");
+			gargoyle_health = gargoyle_health - Math.floor(Math.random()*(mage_Max_magic_stat-mage_Min_magic_stat+1)+mage_Min_magic_stat);
 			System.out.println("The gargoyle now has " + gargoyle_health + " health left");
+				mana_count = mana_count - 1;
+			System.out.println("You now have " + mana_count + " mana left");
+			gargoyle_queue.remove(mage_speed_stat);
+		}
+		//if the goblin is first
+		if (gargoyle_queue.peek() == gargoyle_speed_stat)
+		{
+			//goblin attacks first
+			//create a code that will have the goblin randomly attack the worrior or the mage
+			int gargoyle_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (gargoyle_attack_choice == 1)
+			{
+				System.out.println("The gargoyle attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+				gargoyle_queue.remove(Mimic_speed_stat);
+			}
+			if(gargoyle_attack_choice == 2)
+			{
+				System.out.println("The gargoyle attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+				gargoyle_queue.remove(gargoyle_speed_stat);
+			}
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+		}
 			break;
+	}
 		case "Heal":
 		case "heal":
-			if (potion_count > 0 && player_health < 175)
+		//ask the usuer who he wants to heal
+		//make a prioity quese to see if the goblin attacks first or the player heals first
+		PriorityQueue<Integer> heal_queue = new PriorityQueue<Integer>();
+		//add the worrior and the mage and the goblin to the queue
+
+		System.out.println("Who do you want to heal?");
+		System.out.println("Worrior");
+		System.out.println("Mage");
+		heal_choice = (in.readLine());
+				int gargoyle_attack_choice;
+				switch (heal_choice)
+		{
+		case "Worrior":
+		case "worrior":
+			//heal the worrior
+			//create a while loop to see who goes first
+			System.out.println("You heal the worrior");
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+			//make the goblin attack
+			gargoyle_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (gargoyle_attack_choice == 1)
 			{
-				System.out.println("You use one of your potions and you health heals by 50 points");
-				player_health = player_health + 50;
-				System.out.println("Your heatlth is not " + player_health);
+				System.out.println("The gargoyle attacks and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
 			}
-			if (potion_count < 1 || player_health == 175)
+			if(gargoyle_attack_choice == 2)
 			{
-				System.out.println("You are not able to use a potion at this time");
+				System.out.println("The Mimic attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			break;
+			
+		case "Mage":
+		case "mage":
+			//heal the mage
+			System.out.println("You heal the mage");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			//make the goblin attack
+			gargoyle_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (gargoyle_attack_choice == 1)
+			{
+				System.out.println("The Mimic attacks you and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
+			}
+			if(gargoyle_attack_choice == 2)
+			{
+				System.out.println("The gargoyle attacks the mage and knocks them to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(gargoyle_Max_attack_stat-gargoyle_Min_attack_stat+1)+gargoyle_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
 			}
 			break;
 		}
+		break;
+		}
 	}
+	
 	while (gargoyle_health > 0);
 	if(gargoyle_health <= 0)
 	{
 		System.out.println("Congratulations!! You have defeated the gargoyle!! You are now able to look around the room.");
-		System.out.println("As the gargoyle fades aways, you notice that a key starts to appear on the floor. you go and pick it up.");
-		System.out.println("You got the boss room key");
-		boss_room_key = 1;
 	}
 	System.out.println("Would you like to use a potion to heal yourself before looking around the room? This is your last chance before the next battle");
 	room_choice = (in.readLine());
+	String heal_choice;
 	switch(room_choice)
 	{
 	case "Yes":
 	case "yes":
-		if (potion_count > 0 && player_health < 175)
+	System.out.println("who would you like to heal?");
+	System.out.println("Worrior");
+	System.out.println("Mage");
+	heal_choice = (in.readLine());
+	switch (heal_choice)
+	{
+	case "Worrior":
+	case "worrior":
+		//heal the worrior
+
+		if (potion_count > 0 && worrior_health < 120)
 		{
 			System.out.println("You use one of your potions and you health heals by 50 points");
-			player_health = player_health + 50;
-			System.out.println("Your heatlth is now " + player_health);
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
 		}
-		if (potion_count < 1 || player_health == 175)
+		if (potion_count < 1 || worrior_health == 120)
 		{
 			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+	case "Mage":
+	case "mage":
+		//heal the mage
+		if (potion_count > 0 && mage_health < 120)
+		{
+			System.out.println("You use one of your potions and you health heals by 50 points");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+		}
+		if (potion_count < 1 || mage_health == 120)
+		{
+			System.out.println("You are not able to use a potion at this time");
+		}
+		break;
+		case "Both":
+		case "both":
+			//heal both
+			if (potion_count > 0 && mage_health < 120 && worrior_health < 120)
+			{
+				System.out.println("You use one of your potions and you health heals by 50 points");
+				mage_health = mage_health + 50;
+				worrior_health = worrior_health + 50;
+				System.out.println("The mage now has " + mage_health + " health left");
+				System.out.println("The worrior now has " + worrior_health + " health left");
+				potion_count = potion_count - 2;
+				System.out.println("You now have " + potion_count + " potions left");
+			}
+			if (potion_count < 1 || mage_health == 120 || worrior_health == 120)
+			{
+				System.out.println("You are not able to use a potion at this time");
+			}
+			break;
 		}
 	case "No":
 	case "no":
@@ -600,57 +1257,168 @@ game_over_screen();
 }
 	
 } while (doagain);	
+	}
 
-}
 public static void boss_room () throws IOException
 {
 	BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	String battle_choice;
 	System.out.println("As you walk into the now room, the door slams behind you. You try to re open it witht the key but it seems to magically sealed.");
-	System.out.println("A big gargoyle swoops down from the top of the room. Time to battle!!!");
+	System.out.println("A big dragon swoops down from the top of the room. Time to battle!!!");
 	do
 	{
-		System.out.println("The dragon attacks you with its fire breath and you get burnt");
-		player_health = player_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
-		System.out.println("You now have " + player_health + " health left");
-		if (player_health <= 0)
-		{
-			game_over_screen();
-		}
-		System.out.println("Please select the action that you will do to fight the gargoyle");
+		
+		System.out.println("Please select the action that you will do to fight the dragon");
 		System.out.println("Attack");
 		System.out.println("Heal");
 		System.out.println("Check dragon stats");
 		battle_choice = (in.readLine());
+		String heal_choice;
 		switch (battle_choice)
 		{
-		case "Check bat stats":
-		case "check bat stats":
+		case "Check dragon stats":
+		case "check dragon stats":
 			System.out.println("The dragon's health is " + dragon_health);
 			System.out.println("The dragon's minimum attack stat is " + dragon_Min_attack_stat);
 			System.out.println("The dragon's maximuim attack stat is " + dragon_Max_attack_stat);
 		break;
 		case "Attack":
 		case "attack":
-			System.out.println("You swing your sword and strike the dragon");
-			dragon_health = dragon_health - Math.floor(Math.random()*(player_Max_attack_stat-player_Min_attack_stat+1)+player_Min_attack_stat);
+		//create a priority queue for the goblin and the worrior and the mage to see who goes first
+          PriorityQueue<Integer>dragon_queue = new PriorityQueue<Integer>();
+		 //add the worrior and the mage and the goblin to the queue
+		 dragon_queue.add((int)worrior_speed_stat);
+		 dragon_queue.add((int)mage_speed_stat);
+		 dragon_queue.add((int)Mimic_speed_stat);
+		 //create a while loop to see who goes first
+		 while(!dragon_queue.isEmpty())
+		 {
+		//if the worrior is first
+		if (dragon_queue.peek() == worrior_speed_stat)
+		{
+			//worrior attacks first
+			System.out.println("You attack the dragon with your sword");
+			dragon_health = dragon_health - Math.floor(Math.random()*(worrior_Max_attack_stat-worrior_Min_attack_stat+1)+worrior_Min_attack_stat);
+			System.out.println("The dragon now has " + dragon_health + " health left"); 
+			dragon_queue.remove(worrior_speed_stat); 
+		}
+		//if the mage is first
+		if (dragon_queue.peek() == mage_speed_stat)
+		{
+			//mage attacks first
+			System.out.println("You attack the dragon with your magic");
+			dragon_health = dragon_health - Math.floor(Math.random()*(mage_Max_magic_stat-mage_Min_magic_stat+1)+mage_Min_magic_stat);
 			System.out.println("The dragon now has " + dragon_health + " health left");
+				mana_count = mana_count - 1;
+			System.out.println("You now have " + mana_count + " mana left");
+			dragon_queue.remove(mage_speed_stat);
+		}
+		//if the goblin is first
+		if (dragon_queue.peek() == dragon_speed_stat)
+		{
+			//goblin attacks first
+			//create a code that will have the goblin randomly attack the worrior or the mage
+			int dragon_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (dragon_attack_choice == 1)
+			{
+				System.out.println("Thedragon attacks you with its club and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+				dragon_queue.remove(Mimic_speed_stat);
+			}
+			if(dragon_attack_choice == 2)
+			{
+				System.out.println("The dragon attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+				dragon_queue.remove(dragon_speed_stat);
+			}
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+		}
 			break;
+	}
 		case "Heal":
 		case "heal":
-			if (potion_count > 0 && player_health < 175)
+		//ask the usuer who he wants to heal
+		//make a prioity quese to see if the goblin attacks first or the player heals first
+		PriorityQueue<Integer> heal_queue = new PriorityQueue<Integer>();
+		//add the worrior and the mage and the goblin to the queue
+
+		System.out.println("Who do you want to heal?");
+		System.out.println("Worrior");
+		System.out.println("Mage");
+		heal_choice = (in.readLine());
+				int dragon_attack_choice;
+				switch (heal_choice)
+		{
+		case "Worrior":
+		case "worrior":
+			//heal the worrior
+			//create a while loop to see who goes first
+			System.out.println("You heal the worrior");
+			worrior_health = worrior_health + 50;
+			System.out.println("The worrior now has " + worrior_health + " health left");
+			potion_count = potion_count - 1;
+			System.out.println("You now have " + potion_count + " potions left");
+			//make the goblin attack
+			dragon_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (dragon_attack_choice == 1)
 			{
-				System.out.println("You use one of your potions and you health heals by 50 points");
-				player_health = player_health + 50;
-				System.out.println("Your heatlth is not " + player_health);
+				System.out.println("The dragon attacks and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
 			}
-			if (potion_count < 1 || player_health == 175)
+			if(dragon_attack_choice == 2)
 			{
-				System.out.println("You are not able to use a potion at this time");
+				System.out.println("The dragon attacks the mage with its club and knocks you to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
+			}
+			break;
+			
+		case "Mage":
+		case "mage":
+			//heal the mage
+			System.out.println("You heal the mage");
+			mage_health = mage_health + 50;
+			System.out.println("The mage now has " + mage_health + " health left");
+			potion_count = potion_count - 1;
+			//make the goblin attack
+			dragon_attack_choice = (int)Math.floor(Math.random()*(3-1+1)+1);
+			if (dragon_attack_choice == 1)
+			{
+				System.out.println("The dragon attacks you and knocks you to the floor");
+				worrior_health = worrior_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
+				System.out.println("You now have " + worrior_health + " health left");
+		
+			}
+			if(dragon_attack_choice == 2)
+			{
+				System.out.println("The dragon attacks the mage and knocks them to the floor");
+				mage_health = mage_health - Math.floor(Math.random()*(dragon_Max_attack_stat-dragon_Min_attack_stat+1)+dragon_Min_attack_stat);;
+				System.out.println("You now have " + mage_health + " health left");
+			}
+			
+			if(worrior_health && mage_health <= 0)
+			{
+				game_over_screen();
 			}
 			break;
 		}
+		break;
+		}
 	}
+	
+	while (dragon_health > 0);
 	while (dragon_health > 0);
 	if(dragon_health <= 0)
 	{
@@ -684,7 +1452,7 @@ public static void Room_1_second_visit() throws IOException
 				System.out.println("You already got the item from this wall");
 			if(bomb_count > 2)
 				System.out.println("You use two of the bombs to break open the wall. You find a ring that boosts you minimum attck stat by 5 points");
-				player_Min_attack_stat = player_Min_attack_stat + 5;
+				worrior_Min_attack_stat = worrior_Min_attack_stat + 5;
 				bomb_count = bomb_count -2;
 			if (bomb_count == 0)
 			{
@@ -784,7 +1552,7 @@ public static void Room_3_second_visit() throws IOException
 	BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	String battle_choice;
 	String room_choice;
-  String door_choice;
+	String door_choice;
 	String back_to_middle_response;
 	boolean check_again;
 	boolean doagain;
@@ -809,7 +1577,7 @@ public static void Room_3_second_visit() throws IOException
 		if(bomb_count > 0)
 		{
 			System.out.println("You use one of the bombs to break open the wall. You find a sword that boosts you maximum attck stat by 5 points");
-			player_Min_attack_stat = player_Max_attack_stat + 5;
+			worrior_Min_attack_stat = worrior_Max_attack_stat + 5;
 			bomb_count = bomb_count -1;
 		}
 		break;

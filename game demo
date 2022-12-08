@@ -150,7 +150,7 @@ public static void first_room_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			
 			}
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -197,7 +197,7 @@ public static void first_room_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -226,7 +226,7 @@ public static void first_room_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -451,7 +451,7 @@ public static void second_room_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			Bat_queue.remove(Bat_speed_stat);
 			}
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -499,7 +499,7 @@ public static void second_room_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -528,7 +528,7 @@ public static void second_room_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -751,7 +751,7 @@ public static void Room_3_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 				Mimic_queue.remove(Mimic_speed_stat);
 			}
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -799,7 +799,7 @@ public static void Room_3_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -828,7 +828,7 @@ public static void Room_3_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -1028,7 +1028,7 @@ public static void Room_4_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 				gargoyle_queue.remove(gargoyle_speed_stat);
 			}
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -1074,7 +1074,7 @@ public static void Room_4_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -1103,7 +1103,7 @@ public static void Room_4_initial_visit() throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -1333,7 +1333,7 @@ public static void boss_room () throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 				dragon_queue.remove(dragon_speed_stat);
 			}
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -1379,7 +1379,7 @@ public static void boss_room () throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health <= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
@@ -1408,7 +1408,7 @@ public static void boss_room () throws IOException
 				System.out.println("You now have " + mage_health + " health left");
 			}
 			
-			if(worrior_health && mage_health <= 0)
+			if(worrior_health<= 0 && mage_health <= 0)
 			{
 				game_over_screen();
 			}
